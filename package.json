@@ -9,9 +9,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/socket.io": "^2.1.7",
     "body-parser": "^1.18.3",
     "cors": "^2.8.4",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.4",

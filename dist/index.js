@@ -7,7 +7,7 @@ const server_1 = __importDefault(require("./classes/server"));
 const router_1 = __importDefault(require("./routes/router"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
-const server = new server_1.default();
+const server = server_1.default.instance;
 server.app.use(body_parser_1.default.urlencoded({ extended: true }));
 server.app.use(body_parser_1.default.json());
 server.app.use(cors_1.default({ origin: true, credentials: true }));
