@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.userOut = exports.configUser = exports.message = exports.disconnect = exports.connectClient = exports.userList = void 0;
 const users_list_1 = require("../classes/users-list");
 const user_1 = require("../classes/user");
 exports.userList = users_list_1.UsersList.instance;
@@ -22,13 +23,21 @@ exports.message = (client, io) => {
 exports.configUser = (client) => {
     client.on('config-user', (payload, callback) => {
         console.log({ payload });
-        exports.userList.updateName(client.id, payload.name).then(({ users, userIn }) => {
+        exports.userList.updateName(client.id, payload.name).then(({ users, user }) => {
             callback({
                 ok: true,
-                userIn,
+                user,
                 users
             });
-            client.broadcast.emit('new-user', userIn);
+            client.broadcast.emit('new-user', user);
+        });
+    });
+};
+exports.userOut = (client) => {
+    client.on('logout', (payload, callback) => {
+        exports.userList.updateName(client.id, 'NO-NAME').then(({ users, user }) => {
+            client.broadcast.emit('user-out', user);
+            callback();
         });
     });
 };

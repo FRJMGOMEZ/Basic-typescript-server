@@ -27,15 +27,25 @@ export const message = (client:Socket, io:socketIO.Server)=>{
 export const configUser = (client:Socket)=>{
      client.on('config-user',(payload:{name:string},callback:Function)=>{
          console.log({payload})
-         userList.updateName(client.id,payload.name).then(({users,userIn})=>{
+         userList.updateName(client.id,payload.name).then(({users,user})=>{
              callback({
                  ok: true,
-                 userIn,
+                 user,
                  users
              })
-             client.broadcast.emit('new-user',userIn)
+             client.broadcast.emit('new-user',user)
          })
      }) 
+}
+
+
+export const userOut = (client:Socket)=>{
+    client.on('logout',(payload:{user:User},callback:Function)=>{
+        userList.updateName(client.id,'NO-NAME').then(({users,user})=>{
+            client.broadcast.emit('user-out', user)
+            callback();
+        })
+    })
 }
 
 

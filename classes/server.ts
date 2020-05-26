@@ -41,13 +41,11 @@ export default class Server {
 
     private listenningSockets(){
         this.io.on('connection',client=>{
-
-
             socket.connectClient(client)
-
             socket.configUser(client);
             socket.disconnect(client);
             socket.message(client,this.io);
+            socket.userOut(client)
         }) 
     }
 

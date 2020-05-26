@@ -1,8 +1,6 @@
 
 import {Router,Request,Response} from 'express';
 import Server from '../classes/server';
-import { userList } from '../sockets/socket';
-import { UsersList } from '../classes/users-list';
 
 export const router = Router();
 
@@ -32,10 +30,10 @@ router.get('/messages',(req:Request,res:Response)=>{
     })
 })
 
-router.get('/users',(req:Request,res:Response)=>{
-    let userList = UsersList.instance;
-    res.status(200).json({users:userList.getUserList()})
-})
+
+
+/*  */
+
  
 
 export default router;

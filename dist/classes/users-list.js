@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UsersList = void 0;
 class UsersList {
     constructor() {
         this.users = [];
@@ -15,9 +16,9 @@ class UsersList {
         return new Promise((resolve, reject) => {
             let user = this.users.filter((user) => { return user.id === id; })[0];
             user.name = name;
-            let users = this.users.filter((user) => { return user.id != id; });
+            let users = this.users.filter((user) => { return user.id != id && user.name != 'NO-NAME'; });
             console.log();
-            resolve({ users, userIn: user });
+            resolve({ users, user });
         });
     }
     getUserList() {

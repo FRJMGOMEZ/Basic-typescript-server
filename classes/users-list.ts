@@ -1,6 +1,4 @@
 import { User } from './user';
-import { userList } from '../sockets/socket';
-
 
 export class UsersList{
 
@@ -23,13 +21,13 @@ export class UsersList{
         return user;
     }
 
-    updateName(id:string,name:string):Promise<{users:User[],userIn:User}>{
+    updateName(id:string,name:string):Promise<{users:User[],user:User}>{
         return new Promise((resolve,reject)=>{
             let user = this.users.filter((user: User) => { return user.id === id })[0]; 
             user.name = name;
-            let users = this.users.filter((user: User) => { return user.id != id }); 
+            let users = this.users.filter((user: User) => { return user.id != id && user.name != 'NO-NAME' }); 
             console.log()
-            resolve({users,userIn:user});
+            resolve({users,user});
         })
     }
 
@@ -46,16 +44,10 @@ export class UsersList{
     }
 
     removeUserById(id:string){
-
         return new Promise((resolve,reject)=>{
             const tempUser = this.getUserById(id);
-
             this.users = this.users.filter((user: User) => { return user.id != id });
-
             resolve(tempUser);
-
         })
-        
-
     }
 }
