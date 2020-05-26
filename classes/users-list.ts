@@ -1,7 +1,10 @@
 import { User } from './user';
+import { userList } from '../sockets/socket';
 
 
 export class UsersList{
+
+    public static _instance: UsersList;
 
     private users:User[] = [];
 
@@ -9,15 +12,25 @@ export class UsersList{
 
     ){}
 
+    public static get instance() {
+
+        return this._instance || (this._instance = new this())
+
+    }
+
     addUser(user:User){
         this.users.push(user);
-        console.log({newUser:user})
         return user;
     }
 
-    updateName(id:string,name:string){
-        this.users.filter((user:User)=>{ return user.id === id})[0].name = name;
-        console.log(this.users)
+    updateName(id:string,name:string):Promise<{users:User[],userIn:User}>{
+        return new Promise((resolve,reject)=>{
+            let user = this.users.filter((user: User) => { return user.id === id })[0]; 
+            user.name = name;
+            let users = this.users.filter((user: User) => { return user.id != id }); 
+            console.log()
+            resolve({users,userIn:user});
+        })
     }
 
     getUserList(){
@@ -33,12 +46,16 @@ export class UsersList{
     }
 
     removeUserById(id:string){
+
+        return new Promise((resolve,reject)=>{
+            const tempUser = this.getUserById(id);
+
+            this.users = this.users.filter((user: User) => { return user.id != id });
+
+            resolve(tempUser);
+
+        })
         
-        const tempUser = this.getUserById(id);
-
-        this.users = this.users.filter((user:User)=>{ return user.id != id});
-
-        return tempUser;
 
     }
 }

@@ -4,7 +4,7 @@ import { UsersList } from '../classes/users-list';
 import { User } from '../classes/user';
 
 
-export const userList = new UsersList();
+export const userList = UsersList.instance;
 
 export const connectClient = (client:Socket)=>{
     const newUser = new User(client.id);
@@ -13,7 +13,9 @@ export const connectClient = (client:Socket)=>{
 
 export const disconnect = (client:Socket)=>{
     client.on('disconnect',()=>{
-        userList.removeUserById(client.id)
+        userList.removeUserById(client.id).then((user)=>{
+            client.broadcast.emit('user-out',user)
+        })
     })
 }
 export const message = (client:Socket, io:socketIO.Server)=>{
@@ -24,12 +26,15 @@ export const message = (client:Socket, io:socketIO.Server)=>{
 
 export const configUser = (client:Socket)=>{
      client.on('config-user',(payload:{name:string},callback:Function)=>{
-         userList.updateName(client.id,payload.name)
-        callback({
-            ok:true,
-            user:payload.name,
-            message:`User ${payload.name} configurado`
-        })
+         console.log({payload})
+         userList.updateName(client.id,payload.name).then(({users,userIn})=>{
+             callback({
+                 ok: true,
+                 userIn,
+                 users
+             })
+             client.broadcast.emit('new-user',userIn)
+         })
      }) 
 }
 

@@ -2,14 +2,16 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const users_list_1 = require("../classes/users-list");
 const user_1 = require("../classes/user");
-exports.userList = new users_list_1.UsersList();
+exports.userList = users_list_1.UsersList.instance;
 exports.connectClient = (client) => {
     const newUser = new user_1.User(client.id);
     exports.userList.addUser(newUser);
 };
 exports.disconnect = (client) => {
     client.on('disconnect', () => {
-        exports.userList.removeUserById(client.id);
+        exports.userList.removeUserById(client.id).then((user) => {
+            client.broadcast.emit('user-out', user);
+        });
     });
 };
 exports.message = (client, io) => {
@@ -19,11 +21,14 @@ exports.message = (client, io) => {
 };
 exports.configUser = (client) => {
     client.on('config-user', (payload, callback) => {
-        exports.userList.updateName(client.id, payload.name);
-        callback({
-            ok: true,
-            user: payload.name,
-            message: `User ${payload.name} configurado`
+        console.log({ payload });
+        exports.userList.updateName(client.id, payload.name).then(({ users, userIn }) => {
+            callback({
+                ok: true,
+                userIn,
+                users
+            });
+            client.broadcast.emit('new-user', userIn);
         });
     });
 };
